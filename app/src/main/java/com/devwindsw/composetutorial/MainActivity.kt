@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,9 +49,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class Message(val author: String, val body: String) {
-    var isExpanded: Boolean = false
-}
+data class Message(val author: String, val body: String) {}
 
 @Composable
 fun MessageCard(msg: Message) {
@@ -76,7 +75,7 @@ fun MessageCard(msg: Message) {
         // Kotlin's delegated property syntax (the by keyword).
         // import androidx.compose.runtime.getValue
         // import androidx.compose.runtime.setValue
-        var isExpanded by remember { mutableStateOf(msg.isExpanded) }
+        var isExpanded by rememberSaveable { mutableStateOf(false) }
         val surfaceColor by animateColorAsState(
             if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
         )
@@ -84,7 +83,6 @@ fun MessageCard(msg: Message) {
         // We toggle the isExpanded variable when we click on this Column
         Column(modifier = Modifier.clickable {
             isExpanded = !isExpanded
-            msg.isExpanded = isExpanded
         }) {
             Text(
                 text = msg.author,
